@@ -3,7 +3,7 @@ import datetime
 import pandas as pd
 
 st.set_page_config(page_title="Hospital Management System", layout="centered")
-st.title("🏥 Hospital Management System")
+st.title(" Hospital Management System")
 
 
 def load_doctors():
@@ -31,7 +31,7 @@ menu = st.sidebar.radio("Go to", ["Patient Registration", "Book Appointment", "P
 
 
 if menu == "Patient Registration":
-    st.header("📝 Register Patient")
+    st.header(" Register Patient")
     name = st.text_input("Full Name")
     age = st.number_input("Age", min_value=0, max_value=120, step=1)
     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
@@ -46,7 +46,7 @@ if menu == "Patient Registration":
 
 
 elif menu == "Book Appointment":
-    st.header("📅 Book Appointment")
+    st.header(" Book Appointment")
     patient_name = st.text_input("Enter Your Name")
     doctors = load_doctors()
     doctor_names = [f"{doc[0]} ({doc[1]}) - {doc[2]}" for doc in doctors]
@@ -63,7 +63,7 @@ elif menu == "Book Appointment":
 
 
 elif menu == "Prescriptions":
-    st.header("💊 Add Prescription")
+    st.header(" Add Prescription")
     pname = st.text_input("Patient Name")
     pres = st.text_area("Enter Prescription Details")
 
@@ -76,7 +76,7 @@ elif menu == "Prescriptions":
 
 
 elif menu == "Daily Report":
-    st.header("📋 Daily Report")
+    st.header(" Daily Report")
     today = str(datetime.date.today())
 
     def filter_today(data):
@@ -92,19 +92,19 @@ elif menu == "Daily Report":
     if len(parts) == 3 and parts[2] == str(datetime.date.today()):
      prescriptions.append(parts)
 
-    st.subheader("🧑‍🤝‍🧑 Patients Registered Today")
+    st.subheader(" Patients Registered Today")
     st.dataframe(pd.DataFrame(patients, columns=["Name", "Age", "Gender", "Contact", "Date"]))
 
-    st.subheader("📅 Appointments Today")
+    st.subheader(" Appointments Today")
     st.dataframe(pd.DataFrame(appointments, columns=["Patient", "Doctor", "Time", "Date"]))
 
-    st.subheader("💊 Prescriptions Today")
+    st.subheader(" Prescriptions Today")
     with open("prescriptions.txt", "r") as f:
      prescriptions_raw = f.readlines()
 
     prescriptions = []
     for line in prescriptions_raw:
-     parts = line.strip().split(",", 2)  # limit to 3 parts
+     parts = line.strip().split(",", 2)  
     if len(parts) == 3 and parts[2] == str(datetime.date.today()):
         prescriptions.append(parts)
 
