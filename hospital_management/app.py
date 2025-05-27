@@ -5,7 +5,7 @@ import pandas as pd
 st.set_page_config(page_title="Hospital Management System", layout="centered")
 st.title("🏥 Hospital Management System")
 
-# Helper functions
+
 def load_doctors():
     with open("doctors.txt", "r") as f:
         return [line.strip().split(",") for line in f.readlines()]
@@ -26,10 +26,10 @@ def read_file(file):
     with open(file, "r") as f:
         return [line.strip().split(",") for line in f.readlines()]
 
-# Navigation
+
 menu = st.sidebar.radio("Go to", ["Patient Registration", "Book Appointment", "Prescriptions", "Daily Report"])
 
-# --------------------- Patient Registration ---------------------
+
 if menu == "Patient Registration":
     st.header("📝 Register Patient")
     name = st.text_input("Full Name")
@@ -44,7 +44,7 @@ if menu == "Patient Registration":
         else:
             st.error("Please fill all fields.")
 
-# --------------------- Book Appointment ---------------------
+
 elif menu == "Book Appointment":
     st.header("📅 Book Appointment")
     patient_name = st.text_input("Enter Your Name")
@@ -61,7 +61,7 @@ elif menu == "Book Appointment":
         else:
             st.error("Enter your name before booking.")
 
-# --------------------- Prescriptions ---------------------
+
 elif menu == "Prescriptions":
     st.header("💊 Add Prescription")
     pname = st.text_input("Patient Name")
@@ -74,7 +74,7 @@ elif menu == "Prescriptions":
         else:
             st.error("Both fields are required.")
 
-# --------------------- Daily Report ---------------------
+
 elif menu == "Daily Report":
     st.header("📋 Daily Report")
     today = str(datetime.date.today())
@@ -88,7 +88,7 @@ elif menu == "Daily Report":
      prescriptions_raw = f.readlines()
      prescriptions = []
     for line in prescriptions_raw:
-     parts = line.strip().split(",", 2)  # ✅ Limit to 3 parts
+     parts = line.strip().split(",", 2) 
     if len(parts) == 3 and parts[2] == str(datetime.date.today()):
      prescriptions.append(parts)
 
