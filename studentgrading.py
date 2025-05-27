@@ -8,7 +8,6 @@ from reportlab.lib.units import inch
 import tempfile
 import os
 
-# --- Configuration and Utility Functions ---
 
 def assign_grade(total_marks):
     """Assigns a letter grade based on total marks."""
@@ -76,7 +75,7 @@ st.set_page_config(layout="centered", page_title="Student Grading System", page_
 st.title("📝 Student Grading and Report System")
 st.markdown("Upload a **CSV** or **Excel** file containing student marks to generate report cards.")
 
-# Instructions for CSV/Excel format
+
 st.sidebar.header("CSV/Excel Format Instructions")
 st.sidebar.markdown("""
 Your file should have the following columns:
@@ -117,20 +116,18 @@ if uploaded_file is not None:
         st.subheader("Raw Data Preview")
         st.dataframe(dataframe)
 
-        # --- NEWLY ADDED: Column Name Cleaning ---
-        # Clean column names by stripping leading/trailing whitespace
         dataframe.columns = dataframe.columns.str.strip()
-        # --- END OF NEWLY ADDED SECTION ---
+       
 
 
-        # --- Data Validation ---
+       
         required_columns = {'Student ID', 'Name', 'Class'}
         if not required_columns.issubset(dataframe.columns):
             missing_cols = required_columns - set(dataframe.columns)
             st.error(f"Error: The file must contain the following columns: {', '.join(missing_cols)}. Please check your file's headers.")
             st.warning("Please ensure column names exactly match 'Student ID', 'Name', and 'Class' (case-sensitive, no extra spaces).")
         else:
-            # Identify subject columns (all columns except 'Student ID', 'Name', 'Class')
+            
             subject_columns = [col for col in dataframe.columns if col not in required_columns]
             if not subject_columns:
                 st.warning("No subject columns found. Please ensure your file has columns for subject marks (e.g., 'Math', 'Science').")
@@ -145,13 +142,13 @@ if uploaded_file is not None:
 
                         marks = {}
                         for subject in subject_columns:
-                            # Handle potential non-numeric marks gracefully
+                            
                             try:
-                                # Convert to float, then to int if it's a whole number, for cleaner display
+                               
                                 mark_value = float(row[subject])
                                 marks[subject] = int(mark_value) if mark_value == int(mark_value) else mark_value
                             except (ValueError, TypeError):
-                                marks[subject] = 0 # Assign 0 if mark is invalid or missing
+                                marks[subject] = 0 
                                 st.warning(f"Warning: Invalid mark found for student '{name}', subject '{subject}'. Assuming 0.")
 
                         total_marks = sum(marks.values())
@@ -167,28 +164,28 @@ if uploaded_file is not None:
                         })
                     except KeyError as ke:
                         st.error(f"Data processing error: Missing expected column '{ke}' in row {index + 2}. Please check your file's headers carefully.")
-                        processed_data = [] # Clear data to prevent incomplete processing
-                        break # Stop processing further rows
+                        processed_data = []
+                        break 
                     except Exception as e:
                         st.error(f"An unexpected error occurred while processing row {index + 2}: {e}")
                         processed_data = []
                         break
 
-                if processed_data: # Only proceed if data was successfully processed
+                if processed_data:
                     st.success("Grades assigned successfully!")
 
-                    # Display summary of grades
+                  
                     display_df = pd.DataFrame([
                         {'Student ID': s['Student ID'], 'Name': s['Name'], 'Class': s['Class'],
                          'Total Marks': s['Total Marks'], 'Grade': s['Grade']}
                         for s in processed_data
                     ])
                     st.subheader("Summary of Grades")
-                    st.dataframe(display_df.set_index('Student ID')) # Set ID as index for better display
+                    st.dataframe(display_df.set_index('Student ID')) 
 
                     st.subheader("Generate Individual Report Cards")
 
-                    # Allow selecting a student
+                   
                     student_names = [s['Name'] for s in processed_data]
                     selected_student_name = st.selectbox("Select a student to generate their report card:", student_names)
 
@@ -198,7 +195,6 @@ if uploaded_file is not None:
                         if selected_student_data:
                             st.markdown(f"### Report Card for {selected_student_data['Name']}")
 
-                            # Display report card details directly in the app
                             st.write(f"**Student ID:** {selected_student_data['Student ID']}")
                             st.write(f"**Class:** {selected_student_data['Class']}")
                             st.write("**Marks:**")
@@ -210,7 +206,7 @@ if uploaded_file is not None:
 
                             st.subheader("Download Report Card")
 
-                            # Download Text Report
+                           
                             text_report = generate_report_card_text(selected_student_data)
                             st.download_button(
                                 label="Download Text Report Card",
@@ -219,7 +215,7 @@ if uploaded_file is not None:
                                 mime="text/plain"
                             )
 
-                            # Download PDF Report (This part was already present and will now function)
+                           
                             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
                                 pdf_filename = tmpfile.name
                             generate_report_card_pdf(selected_student_data, pdf_filename)
@@ -231,7 +227,7 @@ if uploaded_file is not None:
                                     file_name=f"{selected_student_data['Name']}_Report_Card.pdf",
                                     mime="application/pdf"
                                 )
-                            # Clean up the temporary PDF file after download
+                           
                             os.remove(pdf_filename)
 
     except pd.errors.EmptyDataError:
